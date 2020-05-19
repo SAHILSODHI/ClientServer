@@ -16,6 +16,7 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
     override the handle() method to implement communication to the
     client.
     """
+    
     def RepresentsInt(s):
         try: 
             int(s)

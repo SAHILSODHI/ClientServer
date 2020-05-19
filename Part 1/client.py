@@ -12,6 +12,13 @@ import sys
 HOST, PORT = "localhost", 9999
 data = " ".join(sys.argv[1:])
 
+def RepresentsInt(s):
+        try: 
+            int(s)
+            return True
+        except ValueError:
+            return False
+
 # Create a socket (SOCK_STREAM means a TCP socket)
 while True:
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
@@ -28,12 +35,15 @@ while True:
            8. Exit\n
            Enter your choice: """)
         choice = choice.strip()
+        if not RepresentsInt(choice) or int(choice) < 1 or int(choice) > 8:
+            print('Please enter a number from 1-8')
+            continue
         if choice == '8':
             print('Good Bye')
             break
         sock.sendall(bytes(choice + "\n", "utf-8"))
         # Receive data from the server and shut down
-        received = str(sock.recv(1024), "utf-8")
+        received = str(sock.recv(4096), "utf-8")
         while True:
             if received.startswith('[OK 200]'):
                 break
