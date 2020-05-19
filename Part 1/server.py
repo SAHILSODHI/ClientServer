@@ -16,6 +16,12 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
     override the handle() method to implement communication to the
     client.
     """
+    def RepresentsInt(s):
+        try: 
+            int(s)
+            return True
+        except ValueError:
+            return False
     
     def send(self, text):
         self.request.sendall(bytes(text + "\n", "utf-8"))
@@ -60,12 +66,15 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
             else:
                 MyTCPHandler.send(self, 'Enter age of the customer')
                 age = self.request.recv(1024).strip().decode("utf-8")
-                MyTCPHandler.send(self, 'Enter address of the customer')
-                address = self.request.recv(1024).strip().decode("utf-8")
-                MyTCPHandler.send(self, 'Enter phone number of the customer')
-                phone = self.request.recv(1024).strip().decode("utf-8")
-                MyTCPHandler.d[userName.strip()] = [age.strip(), address.strip(), phone.strip()]
-                MyTCPHandler.send(self, '[OK 200]Customer record added successfully')
+                if not MyTCPHandler.RepresentsInt(age):
+                    MyTCPHandler.send(self, '[OK 200]Age should be a number.')
+                else:
+                    MyTCPHandler.send(self, 'Enter address of the customer')
+                    address = self.request.recv(1024).strip().decode("utf-8")
+                    MyTCPHandler.send(self, 'Enter phone number of the customer')
+                    phone = self.request.recv(1024).strip().decode("utf-8")
+                    MyTCPHandler.d[userName.strip()] = [age.strip(), address.strip(), phone.strip()]
+                    MyTCPHandler.send(self, '[OK 200]Customer record added successfully')
                 
         if choice == '3':
             MyTCPHandler.send(self, 'Enter name of the customer: ')
@@ -86,8 +95,11 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
             if userName in MyTCPHandler.d:
                 MyTCPHandler.send(self, 'Enter new age of the customer: ')
                 newAge = self.request.recv(1024).strip().decode("utf-8")
-                MyTCPHandler.d[userName.strip()][0] = newAge
-                MyTCPHandler.send(self, '[OK 200]Customer age updated successfully')
+                if not MyTCPHandler.RepresentsInt(newAge):
+                    MyTCPHandler.send(self, '[OK 200]Age should be a number.')
+                else:
+                    MyTCPHandler.d[userName.strip()][0] = newAge
+                    MyTCPHandler.send(self, '[OK 200]Customer age updated successfully')
             else:
                 MyTCPHandler.send(self, '[OK 200]Customer does not exist')
         
@@ -128,10 +140,11 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
             MyTCPHandler.send(self, res)
             
 if __name__ == "__main__":
-    HOST, PORT = "localhost", 9991
+    HOST, PORT = "localhost", 9999
 
     # Create the server, binding to localhost on port 9999
     with socketserver.TCPServer((HOST, PORT), MyTCPHandler) as server:
         # Activate the server; this will keep running until you
         # interrupt the program with Ctrl-C
         server.serve_forever()
+        

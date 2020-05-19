@@ -9,7 +9,7 @@ Created on Mon May 18 01:55:59 2020
 import socket
 import sys
 
-HOST, PORT = "localhost", 9991
+HOST, PORT = "localhost", 9999
 data = " ".join(sys.argv[1:])
 
 # Create a socket (SOCK_STREAM means a TCP socket)
@@ -42,3 +42,4 @@ while True:
                 sock.sendall(bytes(userChoice + "\n", "utf-8"))
                 received = str(sock.recv(1024), "utf-8")   
         print(format(received[8:]))
+        
