@@ -67,7 +67,7 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
             else:
                 MyTCPHandler.send(self, 'Enter age of the customer')
                 age = self.request.recv(1024).strip().decode("utf-8")
-                if not MyTCPHandler.RepresentsInt(age):
+                if age != '' and not MyTCPHandler.RepresentsInt(age):
                     MyTCPHandler.send(self, '[OK 200]Age should be a number.')
                 else:
                     MyTCPHandler.send(self, 'Enter address of the customer')
@@ -96,7 +96,7 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
             if userName in MyTCPHandler.d:
                 MyTCPHandler.send(self, 'Enter new age of the customer: ')
                 newAge = self.request.recv(1024).strip().decode("utf-8")
-                if not MyTCPHandler.RepresentsInt(newAge):
+                if newAge != '' and not MyTCPHandler.RepresentsInt(newAge):
                     MyTCPHandler.send(self, '[OK 200]Age should be a number.')
                 else:
                     MyTCPHandler.d[userName.strip()][0] = newAge
